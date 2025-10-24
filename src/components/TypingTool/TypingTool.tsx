@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Complete } from "./Complete";
-import { getCharColor, getCharOpacity } from "./Utils";
+import { getCharColor, getCharOpacity, getRandomSnippet } from "./Utils";
+import { CodeSnippet, snippets } from "../../data/snippets";
 
 export const TypingTool = () => {
   const [input, setInput] = useState<string>("");
@@ -9,20 +10,30 @@ export const TypingTool = () => {
   const [wpm, setWpm] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(100);
   const [errors, setErrors] = useState<number>(0);
+  const [usedSnippets, setUsedSnippets] = useState<Set<string>>(new Set());
+  const [currentSnippet, setCurrentSnippet] = useState<CodeSnippet | null>(
+    null
+  );
+  const [sessionStats, setSessionStats] = useState({
+    completed: 0,
+    totalWpm: 0,
+    totalAccuracy: 0,
+  });
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sample code snippet - we'll expand this later
-  const codeSnippet = `const fetchUser = async (id) => {
-  const response = await fetch(\`/api/users/\${id}\`);
-  const data = await response.json();
-  return data;
-};`;
-
+  const codeSnippet = currentSnippet?.code || "";
   const totalChars = codeSnippet.length;
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (!currentSnippet) {
+      const snippet = getRandomSnippet(null, usedSnippets);
+      setCurrentSnippet(snippet);
+    }
+  }, [currentSnippet, usedSnippets]);
 
   useEffect(() => {
     if (input.length === 1 && !startTime) {
@@ -35,14 +46,27 @@ export const TypingTool = () => {
     }
   }, [input]);
 
-  const calculateStats = (startTime) => {
+  const calculateStats = (startTime: number | null) => {
+    if (!startTime) return;
     const endTime = Date.now();
     const timeInMinutes = (endTime - startTime) / 1000 / 60;
     const calculatedWpm = Math.round(totalChars / 5 / timeInMinutes);
     setWpm(calculatedWpm);
+
+    // Update session stats
+    setSessionStats((prev) => ({
+      completed: prev.completed + 1,
+      totalWpm: prev.totalWpm + calculatedWpm,
+      totalAccuracy: prev.totalAccuracy + accuracy,
+    }));
+
+    // Mark snippet as used
+    if (currentSnippet) {
+      setUsedSnippets((prev) => new Set([...prev, currentSnippet.id]));
+    }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComplete) return;
 
     const newInput = e.target.value;
@@ -61,6 +85,18 @@ export const TypingTool = () => {
   };
 
   const handleReset = () => {
+    setInput("");
+    setStartTime(null);
+    setIsComplete(false);
+    setWpm(0);
+    setAccuracy(100);
+    setErrors(0);
+    inputRef.current?.focus();
+  };
+
+  const handleNext = () => {
+    const nextSnippet = getRandomSnippet(null, usedSnippets);
+    setCurrentSnippet(nextSnippet);
     setInput("");
     setStartTime(null);
     setIsComplete(false);
@@ -115,8 +151,9 @@ export const TypingTool = () => {
         {/* Code Display Area */}
         <div className="text-left bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700 relative overflow-hidden">
           <div className="absolute top-3 right-3 text-xs text-gray-500 uppercase tracking-wider">
-            JavaScript
+            {currentSnippet?.language || "JavaScript"}
           </div>
+          ``
           <pre
             className="text-lg leading-relaxed"
             style={{ fontFamily: "'Fira Code', monospace" }}
@@ -171,7 +208,27 @@ export const TypingTool = () => {
 
         {/* Completion Modal */}
         {isComplete && (
-          <Complete {...{ wpm, accuracy, errors, totalChars, handleReset }} />
+          <Complete
+            wpm={wpm}
+            accuracy={accuracy}
+            errors={errors}
+            totalChars={totalChars}
+            sessionCompleted={sessionStats.completed}
+            sessionAvgWpm={
+              sessionStats.completed > 0
+                ? Math.round(sessionStats.totalWpm / sessionStats.completed)
+                : 0
+            }
+            sessionAvgAccuracy={
+              sessionStats.completed > 0
+                ? Math.round(
+                    sessionStats.totalAccuracy / sessionStats.completed
+                  )
+                : 0
+            }
+            handleReset={handleReset}
+            handleNext={handleNext}
+          />
         )}
 
         {/* Instructions */}

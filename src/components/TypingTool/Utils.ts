@@ -1,3 +1,4 @@
+import { CodeSnippet, snippets } from "../../data/snippets";
 // Token types for syntax highlighting (One Dark theme colors)
 export const getTokenType = (char, index, code) => {
   const word = getWordAt(code, index);
@@ -109,4 +110,24 @@ export const getCharOpacity = (index, input) => {
     return "opacity-100";
   }
   return "opacity-60";
+};
+
+export const getRandomSnippet = (
+  category: string | null,
+  usedIds: Set<string>
+): CodeSnippet => {
+  let availableSnippets = category
+    ? snippets.filter((s) => s.category === category)
+    : snippets;
+
+  availableSnippets = availableSnippets.filter((s) => !usedIds.has(s.id));
+
+  if (availableSnippets.length === 0) {
+    availableSnippets = category
+      ? snippets.filter((s) => s.category === category)
+      : snippets;
+  }
+
+  const randomIndex = Math.floor(Math.random() * availableSnippets.length);
+  return availableSnippets[randomIndex];
 };
