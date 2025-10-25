@@ -64,12 +64,12 @@ const increment = () => {
     category: "react",
     difficulty: "medium",
     code: normalizeIndentation(`const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
-  const keyRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+const keyRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  const removeTransition = (e: React.TransitionEvent<HTMLDivElement>): void => {
-    if (e.propertyName !== 'transform') return;
-    e.currentTarget.classList.remove('playing');
-  };`),
+const removeTransition = (e: React.TransitionEvent<HTMLDivElement>): void => {
+  if (e.propertyName !== 'transform') return;
+  e.currentTarget.classList.remove('playing');
+};`),
     title: "Drum Kit Setup Part 1",
   },
   {
@@ -78,12 +78,12 @@ const increment = () => {
     category: "react",
     difficulty: "medium",
     code: normalizeIndentation(`const playSound = useCallback((e: KeyboardEvent): void => {
-  const audio = audioRefs.current.get(e.code);
-  const key = keyRefs.current.get(e.code);
-  if (!audio || !key) return;
-  key.classList.add('playing');
-  audio.currentTime = 0;
-  audio.play();
+const audio = audioRefs.current.get(e.code);
+const key = keyRefs.current.get(e.code);
+if (!audio || !key) return;
+key.classList.add('playing');
+audio.currentTime = 0;
+audio.play();
 }, []);`),
     title: "Drum Kit Setup Part 2",
   },
@@ -107,9 +107,9 @@ return <div>Drum Kit Component</div>;
     category: "typescript",
     difficulty: "easy",
     code: normalizeIndentation(`const inventors15 = 
-      inventors.filter(inventor => 
-        (inventor.year >= 1500 && inventor.year < 1600)
-      );`),
+inventors.filter(inventor => 
+  (inventor.year >= 1500 && inventor.year < 1600)
+);`),
     title: "Filter inventors born in 1500s",
   },
   {
@@ -117,7 +117,7 @@ return <div>Drum Kit Component</div>;
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
-    code: normalizeIndentation(`const fullNames = inventors.map(inventor => ${inventor.first} ${inventor.last})
+    code: normalizeIndentation(`const fullNames = inventors.map(inventor => inventor.first inventor.last)
     .sort((a, b) => a.year > b.year ? 1 : -1);`),
     title: "Map and sort inventors by birthdate",
   },
@@ -278,16 +278,16 @@ if (navigator.geolocation) {
     category: "typescript",
     difficulty: "hard",
     code: normalizeIndentation(`const handleMove = (e) => {
-      const y = e.pageY - this.offsetTop;
-      const percent = y / this.offsetHeight;
-      const min = 0.4;
-      const max = 4;
-      const height = Math.round(percent * 100) + '%';
-      const playbackRate = percent * (max - min) + min;
-      bar.style.height = height;
-      bar.textContent = playbackRate.toFixed(2) + '×';
-      video.playbackRate = playbackRate;
-    }`),
+  const y = e.pageY - this.offsetTop;
+  const percent = y / this.offsetHeight;
+  const min = 0.4;
+  const max = 4;
+  const height = Math.round(percent * 100) + '%';
+  const playbackRate = percent * (max - min) + min;
+  bar.style.height = height;
+  bar.textContent = playbackRate.toFixed(2) + '×';
+  video.playbackRate = playbackRate;
+}`),
     title: "Video Speed Controller",
   },
   {
@@ -296,18 +296,18 @@ if (navigator.geolocation) {
     category: "typescript",
     difficulty: "medium",
     code: normalizeIndentation(`const countdown = (seconds: number) => {
-  const now = Date.now();
-  const then = now + seconds * 1000;
-  displayTimeLeft(seconds);
+const now = Date.now();
+const then = now + seconds * 1000;
+displayTimeLeft(seconds);
 
-  const interval = setInterval(() => {
-    const secondsLeft = Math.round((then - Date.now()) / 1000);
-    if (secondsLeft < 0) {
-      clearInterval(interval);
-      return;
-    }
-    displayTimeLeft(secondsLeft);   
-  }, 1000);
+const interval = setInterval(() => {
+  const secondsLeft = Math.round((then - Date.now()) / 1000);
+  if (secondsLeft < 0) {
+    clearInterval(interval);
+    return;
+  }
+  displayTimeLeft(secondsLeft);   
+}, 1000);
 };`),
     title: "Countdown Timer Function",
   },
