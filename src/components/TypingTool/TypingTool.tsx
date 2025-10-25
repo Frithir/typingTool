@@ -103,7 +103,9 @@ export const TypingTool = () => {
     setWpm(0);
     setAccuracy(100);
     setErrors(0);
-    inputRef.current?.focus();
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
   };
 
   return (
@@ -116,34 +118,38 @@ export const TypingTool = () => {
           >
             Code Typing Practice
           </h1>
-          <p className="text-gray-400">
-            Practice typing code snippets to improve your speed and accuracy
-          </p>
+          <p className="text-gray-400">Improve your speed and accuracy</p>
         </div>
 
         {/* Stats Bar */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">WPM</div>
-            <div className="text-2xl font-bold">
-              {isComplete
-                ? wpm
-                : startTime
-                ? Math.round(
-                    input.length / 5 / ((Date.now() - startTime) / 1000 / 60)
-                  )
-                : 0}
-            </div>
+            <p className="text-gray-400 text-sm mb-1">
+              WPM
+              <span className="text-white font-bold pl-2">
+                {isComplete
+                  ? wpm
+                  : startTime
+                  ? Math.round(
+                      input.length / 5 / ((Date.now() - startTime) / 1000 / 60)
+                    )
+                  : 0}
+              </span>
+            </p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Accuracy</div>
-            <div className="text-2xl font-bold">{accuracy}%</div>
+            <p className="text-gray-400 text-sm mb-1">
+              Accuracy
+              <span className="text-white font-bold pl-2">{accuracy}%</span>
+            </p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Progress</div>
-            <div className="text-2xl font-bold">
-              {input.length}/{totalChars}
-            </div>
+            <p className="text-gray-400 text-sm mb-1">
+              Progress
+              <span className="text-white font-bold pl-2">
+                {input.length}/{totalChars}
+              </span>
+            </p>
           </div>
         </div>
 
