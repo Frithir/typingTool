@@ -1,11 +1,11 @@
-export interface CodeSnippet {
+export type CodeSnippet = {
   id: string;
   language: string;
   category: string;
   difficulty?: "easy" | "medium" | "hard";
   code: string;
   title?: string;
-}
+};
 
 export const snippets: CodeSnippet[] = [
   {

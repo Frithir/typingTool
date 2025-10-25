@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Complete } from "./Complete";
 import { getCharColor, getCharOpacity, getRandomSnippet } from "./Utils";
-import { CodeSnippet, snippets } from "../../data/snippets";
+import type { CodeSnippet } from "../../data/snippets";
 
 export const TypingTool = () => {
   const [input, setInput] = useState<string>("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [wpm, setWpm] = useState<number>(0);
-  const [accuracy, setAccuracy] = useState<number>(100);
+  const [accuracy, setAccuracy] = useState<number>(0);
   const [errors, setErrors] = useState<number>(0);
   const [usedSnippets, setUsedSnippets] = useState<Set<string>>(new Set());
   const [currentSnippet, setCurrentSnippet] = useState<CodeSnippet | null>(
@@ -40,7 +40,7 @@ export const TypingTool = () => {
       setStartTime(Date.now());
     }
 
-    if (input.length === totalChars) {
+    if (input.length === totalChars && totalChars > 0) {
       setIsComplete(true);
       calculateStats(startTime);
     }
@@ -109,7 +109,6 @@ export const TypingTool = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8 font-mono">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
           <h1
             className="text-3xl font-bold mb-2"
@@ -153,7 +152,6 @@ export const TypingTool = () => {
           <div className="absolute top-3 right-3 text-xs text-gray-500 uppercase tracking-wider">
             {currentSnippet?.language || "JavaScript"}
           </div>
-          ``
           <pre
             className="text-lg leading-relaxed"
             style={{ fontFamily: "'Fira Code', monospace" }}
@@ -208,27 +206,29 @@ export const TypingTool = () => {
 
         {/* Completion Modal */}
         {isComplete && (
-          <Complete
-            wpm={wpm}
-            accuracy={accuracy}
-            errors={errors}
-            totalChars={totalChars}
-            sessionCompleted={sessionStats.completed}
-            sessionAvgWpm={
-              sessionStats.completed > 0
-                ? Math.round(sessionStats.totalWpm / sessionStats.completed)
-                : 0
-            }
-            sessionAvgAccuracy={
-              sessionStats.completed > 0
-                ? Math.round(
-                    sessionStats.totalAccuracy / sessionStats.completed
-                  )
-                : 0
-            }
-            handleReset={handleReset}
-            handleNext={handleNext}
-          />
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Complete
+              wpm={wpm}
+              accuracy={accuracy}
+              errors={errors}
+              totalChars={totalChars}
+              sessionCompleted={sessionStats.completed}
+              sessionAvgWpm={
+                sessionStats.completed > 0
+                  ? Math.round(sessionStats.totalWpm / sessionStats.completed)
+                  : 0
+              }
+              sessionAvgAccuracy={
+                sessionStats.completed > 0
+                  ? Math.round(
+                      sessionStats.totalAccuracy / sessionStats.completed
+                    )
+                  : 0
+              }
+              handleReset={handleReset}
+              handleNext={handleNext}
+            />
+          </div>
         )}
 
         {/* Instructions */}

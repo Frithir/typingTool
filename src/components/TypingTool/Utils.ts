@@ -1,4 +1,6 @@
-import { CodeSnippet, snippets } from "../../data/snippets";
+import type { CodeSnippet } from "../../data/snippets";
+import { snippets } from "../../data/snippets";
+
 // Token types for syntax highlighting (One Dark theme colors)
 export const getTokenType = (char, index, code) => {
   const word = getWordAt(code, index);
