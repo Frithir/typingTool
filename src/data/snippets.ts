@@ -59,80 +59,79 @@ const increment = () => {
     title: "TypeScript Arrow Function",
   },
   {
-    id: "drums1",
+    id: "react-useref-map",
     language: "typescript",
     category: "react",
     difficulty: "medium",
     code: normalizeIndentation(`const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
 const keyRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-const removeTransition = (e: React.TransitionEvent<HTMLDivElement>): void => {
+const removeTransition = (e: React.TransitionEvent<HTMLDivElement>) => {
   if (e.propertyName !== 'transform') return;
   e.currentTarget.classList.remove('playing');
 };`),
-    title: "Drum Kit Setup Part 1",
+    title: "React useRef with Map",
   },
   {
-    id: "drums2",
+    id: "react-usecallback",
     language: "typescript",
     category: "react",
     difficulty: "medium",
-    code: normalizeIndentation(`const playSound = useCallback((e: KeyboardEvent): void => {
-const audio = audioRefs.current.get(e.code);
-const key = keyRefs.current.get(e.code);
-if (!audio || !key) return;
-key.classList.add('playing');
-audio.currentTime = 0;
-audio.play();
+    code: normalizeIndentation(`const playSound = useCallback((e: KeyboardEvent) => {
+  const audio = audioRefs.current.get(e.code);
+  const key = keyRefs.current.get(e.code);
+  if (!audio || !key) return;
+  key.classList.add('playing');
+  audio.currentTime = 0;
+  audio.play();
 }, []);`),
-    title: "Drum Kit Setup Part 2",
+    title: "React useCallback Hook",
   },
   {
-    id: "drums3",
+    id: "react-useeffect-cleanup",
     language: "typescript",
     category: "react",
     difficulty: "medium",
     code: normalizeIndentation(`useEffect(() => {
   window.addEventListener('keydown', playSound);
-  return () => window.removeEventListener('keydown', playSound);
-}, [playSound]);
-
-return <div>Drum Kit Component</div>;
-};`),
-    title: "Drum Kit Setup Part 3",
+  return () => {
+    window.removeEventListener('keydown', playSound);
+  };
+}, [playSound]);`),
+    title: "React useEffect with Cleanup",
   },
   {
-    id: "filter",
+    id: "array-filter",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
-    code: normalizeIndentation(`const inventors15 = 
-inventors.filter(inventor => 
-  (inventor.year >= 1500 && inventor.year < 1600)
-);`),
-    title: "Filter inventors born in 1500s",
+    code: normalizeIndentation(`const filtered = inventors.filter(inventor => {
+  return inventor.year >= 1500 && inventor.year < 1600;
+});`),
+    title: "Array Filter Method",
   },
   {
-    id: "map and sort",
+    id: "array-map-sort",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
-    code: normalizeIndentation(`const fullNames = inventors.map(inventor => inventor.first inventor.last)
-    .sort((a, b) => a.year > b.year ? 1 : -1);`),
-    title: "Map and sort inventors by birthdate",
+    code: normalizeIndentation(`const fullNames = inventors
+  .map(inventor => inventor.first + ' ' + inventor.last)
+  .sort((a, b) => a.year > b.year ? 1 : -1);`),
+    title: "Array Map and Sort",
   },
   {
-    id: "reduce",
+    id: "array-reduce",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
     code: normalizeIndentation(`const totalYears = inventors.reduce((total, inventor) => {
   return total + (inventor.passed - inventor.year);
 }, 0);`),
-    title: "Total years lived by all inventors",
+    title: "Array Reduce Method",
   },
   {
-    id: "sort by years lived",
+    id: "array-sort-comparison",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
@@ -141,10 +140,10 @@ inventors.filter(inventor =>
   const nextInventor = b.passed - b.year;
   return lastInventor > nextInventor ? -1 : 1;
 });`),
-    title: "Sort inventors by years lived",
+    title: "Array Sort with Comparison",
   },
   {
-    id: "sort alphabetically",
+    id: "string-split-sort",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
@@ -153,37 +152,37 @@ inventors.filter(inventor =>
   const [bLast, bFirst] = nextOne.split(', ');
   return aLast > bLast ? 1 : -1;
 });`),
-    title: "Sort people alphabetically by last name",
+    title: "Sort by Split Values",
   },
   {
-    id: "reduce instances",
+    id: "reduce-object-count",
     language: "typescript",
     category: "typescript",
-    difficulty: "easy",
-    code: normalizeIndentation(`const transportation = data.reduce(function(obj, item) {
+    difficulty: "medium",
+    code: normalizeIndentation(`const transportation = data.reduce((obj, item) => {
   if (!obj[item]) {
     obj[item] = 0;
   }
   obj[item]++;
   return obj;
-}, {});`),
-    title: "Sum the instances of each item in an array",
+}, {} as Record<string, number>);`),
+    title: "Reduce to Count Instances",
   },
   {
-    id: "Find matches",
+    id: "regex-filter",
     language: "typescript",
     category: "typescript",
-    difficulty: "easy",
-    code: normalizeIndentation(`const findMatches = (wordToMatch, cities) {
-return cities.filter(place => {
-  const regex = new RegExp(wordToMatch, 'gi');
-  return place.city.match(regex) || place.state.match(regex)
-});
-}`),
-    title: "Find matches in an array",
+    difficulty: "medium",
+    code: normalizeIndentation(`const findMatches = (wordToMatch: string, cities: City[]) => {
+  return cities.filter(place => {
+    const regex = new RegExp(wordToMatch, 'gi');
+    return place.city.match(regex) || place.state.match(regex);
+  });
+};`),
+    title: "Filter with RegEx Match",
   },
   {
-    id: "Some Every Find",
+    id: "array-methods-combo",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
@@ -191,95 +190,96 @@ return cities.filter(place => {
 const allAdults = people.every(person => person.age >= 18);
 const foundPerson = people.find(person => person.name === 'John');
 const index = comments.findIndex(comment => comment.id === 823423);`),
-    title: "Array some, every, and find methods",
+    title: "Array Some Every Find",
   },
   {
-    id: "flat and flatMap",
+    id: "array-flat-methods",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
     code: normalizeIndentation(`const allPeople = families.flat();
-const allNames = families.flatMap(family => family.map(person => person.name));`),
-    title: "Array flat and flatMap methods",
+const allNames = families.flatMap(family => {
+  return family.map(person => person.name);
+});`),
+    title: "Array Flat and FlatMap",
   },
   {
-    id: "splice and slice",
+    id: "array-splice-slice",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
-    code: normalizeIndentation(`const removedItems = array.splice(startIndex, deleteCount, item1, item2);
+    code: normalizeIndentation(`const removed = array.splice(startIndex, deleteCount, item1, item2);
 const newArray = array.slice(beginIndex, endIndex);`),
-    title: "Array splice and slice methods",
+    title: "Array Splice vs Slice",
   },
   {
-    id: "local storage",
+    id: "localstorage-typescript",
     language: "typescript",
     category: "typescript",
     difficulty: "easy",
-    code: normalizeIndentation(`// Save data to local storage
-localStorage.setItem('key', JSON.stringify(data));
+    code: normalizeIndentation(`localStorage.setItem('key', JSON.stringify(data));
 
-// Retrieve data from local storage
-const data = JSON.parse(localStorage.getItem('key') || '{}');`),
-    title: "Using Local Storage in TypeScript",
+const stored = localStorage.getItem('key');
+const data = stored ? JSON.parse(stored) : {};`),
+    title: "LocalStorage with TypeScript",
   },
   {
-    id: "Map reduce filter",
+    id: "map-reduce-chain",
     language: "typescript",
     category: "typescript",
     difficulty: "medium",
     code: normalizeIndentation(`const seconds = timeNodes
-.map(timeCode => {
-  const [mins, secs] = timeCode.split(':').map(parseFloat);
-  return (mins * 60) + secs;
-})
-.reduce((total, vidSeconds) => total + vidSeconds);`),
-    title: "Basic Map, Filter, and Reduce Operations",
+  .map(node => {
+    const [mins, secs] = node.split(':').map(parseFloat);
+    return (mins * 60) + secs;
+  })
+  .reduce((total, vidSeconds) => total + vidSeconds, 0);`),
+    title: "Map and Reduce Chain",
   },
   {
-    id: "devices",
+    id: "getusermedia-api",
     language: "typescript",
     category: "typescript",
     difficulty: "hard",
-    code: normalizeIndentation(`const getVideo = () => {
-navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-.then(localMediaStream => {
-  console.log(localMediaStream);
-  video.src = window.URL.createObjectURL(localMediaStream);
-  video.play();
-})
-.catch(error => {
-  console.error(error);
-});
-}`),
-    title: "Get user Media Devices",
+    code: normalizeIndentation(`const getVideo = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
+    video.srcObject = stream;
+    video.play();
+  } catch (error) {
+    console.error('Camera access denied:', error);
+  }
+};`),
+    title: "Get User Media Stream",
   },
   {
-    id: "geolocation",
+    id: "geolocation-api",
     language: "typescript",
     category: "typescript",
     difficulty: "hard",
     code: normalizeIndentation(`const getLocation = () => {
-if (navigator.geolocation) {
+  if (!navigator.geolocation) {
+    console.error('Geolocation not supported');
+    return;
+  }
   navigator.geolocation.getCurrentPosition(position => {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-    console.log('Geometry:', lat, lon);   
+    const { latitude, longitude } = position.coords;
+    console.log(\`Location: \${latitude}, \${longitude}\`);
   });
-} else {
-  console.error("Navigation geolocation is not supported");
-} 
-}`),
-    title: "Get User Geolocation",
+};`),
+    title: "Geolocation API",
   },
   {
-    id: "speed controller",
+    id: "video-playback-control",
     language: "typescript",
     category: "typescript",
     difficulty: "hard",
-    code: normalizeIndentation(`const handleMove = (e) => {
-  const y = e.pageY - this.offsetTop;
-  const percent = y / this.offsetHeight;
+    code: normalizeIndentation(`const handleMove = (e: MouseEvent, element: HTMLElement) => {
+  const y = e.pageY - element.offsetTop;
+  const percent = y / element.offsetHeight;
   const min = 0.4;
   const max = 4;
   const height = Math.round(percent * 100) + '%';
@@ -287,28 +287,28 @@ if (navigator.geolocation) {
   bar.style.height = height;
   bar.textContent = playbackRate.toFixed(2) + '×';
   video.playbackRate = playbackRate;
-}`),
-    title: "Video Speed Controller",
+};`),
+    title: "Video Playback Controller",
   },
   {
-    id: "countdown",
+    id: "countdown-timer",
     language: "typescript",
     category: "typescript",
     difficulty: "medium",
     code: normalizeIndentation(`const countdown = (seconds: number) => {
-const now = Date.now();
-const then = now + seconds * 1000;
-displayTimeLeft(seconds);
-
-const interval = setInterval(() => {
-  const secondsLeft = Math.round((then - Date.now()) / 1000);
-  if (secondsLeft < 0) {
-    clearInterval(interval);
-    return;
-  }
-  displayTimeLeft(secondsLeft);   
-}, 1000);
+  const now = Date.now();
+  const then = now + seconds * 1000;
+  displayTimeLeft(seconds);
+  
+  const interval = setInterval(() => {
+    const secondsLeft = Math.round((then - Date.now()) / 1000);
+    if (secondsLeft < 0) {
+      clearInterval(interval);
+      return;
+    }
+    displayTimeLeft(secondsLeft);
+  }, 1000);
 };`),
-    title: "Countdown Timer Function",
+    title: "Countdown Timer",
   },
 ];
