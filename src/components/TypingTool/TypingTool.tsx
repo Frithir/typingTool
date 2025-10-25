@@ -163,7 +163,7 @@ export const TypingTool = () => {
           >
             Code Typing Practice
           </h1>
-          <p className="text-gray-400">Improve your speed and accuracy</p>
+          <p className="text-gray-400">Learn {currentSnippet?.title}</p>
         </div>
 
         {/* Stats Bar */}
