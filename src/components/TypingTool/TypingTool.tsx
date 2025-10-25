@@ -19,7 +19,7 @@ export const TypingTool = () => {
     totalWpm: 0,
     totalAccuracy: 0,
   });
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const codeSnippet = currentSnippet?.code || "";
   const totalChars = codeSnippet.length;
@@ -66,22 +66,67 @@ export const TypingTool = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (isComplete) return;
 
     const newInput = e.target.value;
-    const currentChar = newInput[newInput.length - 1];
-    const expectedChar = codeSnippet[newInput.length - 1];
 
-    if (currentChar !== expectedChar && newInput.length > input.length) {
-      setErrors((prev) => prev + 1);
+    // Only process if text was added (not deleted)
+    if (newInput.length > input.length) {
+      const currentChar = newInput[newInput.length - 1];
+      const expectedChar = codeSnippet[newInput.length - 1];
+
+      // Don't allow Enter or Tab through normal input (they're handled in onKeyDown)
+      if (currentChar === "\n" || currentChar === "\t") {
+        return;
+      }
+
+      if (currentChar !== expectedChar) {
+        setErrors((prev) => prev + 1);
+      }
     }
 
     setInput(newInput);
 
     // Calculate accuracy
-    const acc = ((newInput.length - errors) / newInput.length) * 100;
-    setAccuracy(Math.max(0, Math.round(acc)));
+    if (newInput.length > 0) {
+      const acc = ((newInput.length - errors) / newInput.length) * 100;
+      setAccuracy(Math.max(0, Math.round(acc)));
+    }
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (isComplete) return;
+
+    const currentPos = input.length;
+    const expectedChar = codeSnippet[currentPos];
+
+    // Handle Enter key
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (expectedChar === "\n") {
+        setInput((prev) => prev + "\n");
+        checkCharacter("\n", expectedChar);
+      }
+    }
+
+    // Handle Tab key
+    if (e.key === "Tab") {
+      e.preventDefault();
+      if (expectedChar === "\t") {
+        setInput((prev) => prev + "\t");
+        checkCharacter("\t", expectedChar);
+      } else if (expectedChar === " ") {
+        // If snippet uses spaces instead of tabs, add the space
+        setInput((prev) => prev + " ");
+        checkCharacter(" ", expectedChar);
+      }
+    }
+  };
+
+  const checkCharacter = (inputChar: string, expectedChar: string) => {
+    if (inputChar !== expectedChar) {
+      setErrors((prev) => prev + 1);
+    }
   };
 
   const handleReset = () => {
@@ -201,13 +246,14 @@ export const TypingTool = () => {
         </div>
 
         {/* Hidden Input */}
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
           value={input}
           onChange={handleInputChange}
-          className="opacity-0 absolute pointer-events-none"
+          onKeyDown={handleKeyDown}
+          className="opacity-0 absolute pointer-events-none resize-none"
           disabled={isComplete}
+          rows={1}
         />
 
         {/* Completion Modal */}
