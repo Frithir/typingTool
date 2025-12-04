@@ -1,47 +1,161 @@
 import type { CodeSnippet } from "../../data/snippets";
 import { snippets } from "../../data/snippets";
 
-// Token types for syntax highlighting (One Dark theme colors)
-export const getTokenType = (char, index, code) => {
-  const word = getWordAt(code, index);
-
-  // Keywords
-  const keywords = [
-    "const",
-    "let",
-    "var",
-    "async",
-    "await",
-    "function",
-    "return",
-    "if",
-    "else",
-    "for",
-    "while",
-    "import",
-    "export",
-    "from",
-    "default",
-  ];
-  if (keywords.includes(word)) return "keyword";
-
-  // Function names (word followed by parenthesis)
-  if (word && code[index + word.length] === "(") return "function";
-
-  // Strings
+export const getTokenType = (char: string, index: number, code: string) => {
+  // First check the character itself for punctuation/operators
+  // Do this BEFORE getting the word
   if (char === '"' || char === "'" || char === "`") return "string";
   if (isInsideString(code, index)) return "string";
 
-  // Numbers
   if (/\d/.test(char)) return "number";
 
-  // Operators and punctuation
   if ("+-*/%=<>!&|".includes(char)) return "operator";
-  if ("(){}[]".includes(char)) return "punctuation";
-  if (",;.".includes(char)) return "punctuation";
+  if ("(){}[]".includes(char)) return "bracket";
+  if (",;.:".includes(char)) return "punctuation";
 
-  // Comments
   if (char === "/" && code[index + 1] === "/") return "comment";
+
+  // Only check for keywords if the current char is actually a letter
+  if (/[a-zA-Z_]/.test(char)) {
+    const word = getWordAt(code, index);
+
+    // Keywords
+    const keywords = [
+      "const",
+      "let",
+      "var",
+      "async",
+      "await",
+      "function",
+      "return",
+      "if",
+      "else",
+      "for",
+      "while",
+      "import",
+      "export",
+      "from",
+      "default",
+      "class",
+      "extends",
+      "new",
+      "this",
+      "super",
+      "static",
+      "useEffect",
+      "useState",
+      "useRef",
+      "useMemo",
+      "useCallback",
+      "useReducer",
+      "type",
+      "interface",
+      "enum",
+      "as",
+      "typeof",
+    ];
+    if (keywords.includes(word)) return "keyword";
+
+    // Known React/JS functions
+    const knownFunctions = [
+      "map",
+      "filter",
+      "reduce",
+      "forEach",
+      "find",
+      "findIndex",
+      "some",
+      "includes",
+      "sort",
+      "RegExp",
+      "every",
+      "fetch",
+      "Promise",
+      "setTimeout",
+      "flat",
+      "flatMap",
+      "join",
+      "split",
+      "push",
+      "pop",
+      "shift",
+      "unshift",
+      "splice",
+      "slice",
+      "replace",
+      "toLowerCase",
+      "toUpperCase",
+      "trim",
+      "charAt",
+      "charCodeAt",
+      "indexOf",
+      "lastIndexOf",
+      "parseInt",
+      "parseFloat",
+      "isNaN",
+      "isFinite",
+      "Date",
+      "getTime",
+      "setTime",
+      "clearTimeout",
+      "clearInterval",
+      "setTimeout",
+      "setInterval",
+      "addEventListener",
+      "querySelector",
+      "getElementById",
+      "console",
+      "Math",
+      "JSON",
+      "parse",
+      "stringify",
+      "createContext",
+      "forwardRef",
+      "lazy",
+      "createPortal",
+      "setItem",
+      "getItem",
+      "document",
+      "window",
+      "match",
+      "get",
+      "post",
+      "put",
+      "delete",
+      "IntersectionObserver",
+      "observer",
+      "navigator",
+      "location",
+      "math",
+      "mediaDevices",
+    ];
+    if (knownFunctions.includes(word)) return "function";
+
+    const redWords = [
+      "undefined",
+      "null",
+      "NaN",
+      "error",
+      "event",
+      "log",
+      "err",
+      "warn",
+      "style",
+      "video",
+      "audio",
+      "void",
+      "any",
+      "never",
+      "unknown",
+      "object",
+      "boolean",
+      "string",
+      "number",
+      "bigint",
+      "symbol",
+    ];
+    if (redWords.includes(word)) return "red";
+  }
 
   return "default";
 };
@@ -86,9 +200,11 @@ export const getSyntaxColor = (tokenType) => {
     string: "text-green-400", // strings
     number: "text-orange-400", // numbers
     operator: "text-cyan-400", // =, +=, etc
+    bracket: "text-yellow-400", // () {} [] , ;
     punctuation: "text-gray-400", // () {} [] , ;
     comment: "text-gray-500", // comments
     default: "text-gray-300", // variables and other text
+    red: "text-red-400", // errors
   };
   return colors[tokenType] || colors.default;
 };

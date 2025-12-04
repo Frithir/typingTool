@@ -73,16 +73,23 @@ export const TypingTool = () => {
 
     // Only process if text was added (not deleted)
     if (newInput.length > input.length) {
-      const currentChar = newInput[newInput.length - 1];
-      const expectedChar = codeSnippet[newInput.length - 1];
+      const typedChars = newInput.slice(input.length);
 
-      // Don't allow Enter or Tab through normal input (they're handled in onKeyDown)
-      if (currentChar === "\n" || currentChar === "\t") {
-        return;
-      }
+      // Process each newly typed character
+      for (let i = 0; i < typedChars.length; i++) {
+        const currentChar = typedChars[i];
+        const expectedPos = input.length + i;
+        const expectedChar = codeSnippet[expectedPos];
 
-      if (currentChar !== expectedChar) {
-        setErrors((prev) => prev + 1);
+        // Don't allow Enter or Tab through normal input (handled in onKeyDown)
+        if (currentChar === "\n" || currentChar === "\t") {
+          return;
+        }
+
+        // Check if character is correct
+        if (currentChar !== expectedChar) {
+          setErrors((prev) => prev + 1);
+        }
       }
     }
 
@@ -94,38 +101,55 @@ export const TypingTool = () => {
       setAccuracy(Math.max(0, Math.round(acc)));
     }
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (isComplete) return;
 
     const currentPos = input.length;
     const expectedChar = codeSnippet[currentPos];
 
-    // Handle Enter key
+    // Handle Enter key - auto-insert newline + indentation
     if (e.key === "Enter") {
       e.preventDefault();
+
       if (expectedChar === "\n") {
-        setInput((prev) => prev + "\n");
-        checkCharacter("\n", expectedChar);
+        // Find how much whitespace follows this newline in the snippet
+        let whitespaceToAdd = "\n";
+        let pos = currentPos + 1;
+
+        // Collect all tabs and spaces that follow the newline
+        while (
+          pos < codeSnippet.length &&
+          (codeSnippet[pos] === "\t" || codeSnippet[pos] === " ")
+        ) {
+          whitespaceToAdd += codeSnippet[pos];
+          pos++;
+        }
+
+        setInput((prev) => prev + whitespaceToAdd);
       }
+      return;
     }
 
-    // Handle Tab key
+    // Handle Tab key - auto-insert all expected whitespace
     if (e.key === "Tab") {
       e.preventDefault();
-      if (expectedChar === "\t") {
-        setInput((prev) => prev + "\t");
-        checkCharacter("\t", expectedChar);
-      } else if (expectedChar === " ") {
-        // If snippet uses spaces instead of tabs, add the space
-        setInput((prev) => prev + " ");
-        checkCharacter(" ", expectedChar);
-      }
-    }
-  };
 
-  const checkCharacter = (inputChar: string, expectedChar: string) => {
-    if (inputChar !== expectedChar) {
-      setErrors((prev) => prev + 1);
+      // Skip any leading whitespace at current position
+      let whitespaceToAdd = "";
+      let pos = currentPos;
+
+      while (
+        pos < codeSnippet.length &&
+        (codeSnippet[pos] === "\t" || codeSnippet[pos] === " ")
+      ) {
+        whitespaceToAdd += codeSnippet[pos];
+        pos++;
+      }
+
+      if (whitespaceToAdd) {
+        setInput((prev) => prev + whitespaceToAdd);
+      }
     }
   };
 
