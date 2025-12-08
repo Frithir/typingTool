@@ -160,19 +160,35 @@ export const getTokenType = (char: string, index: number, code: string) => {
   return "default";
 };
 
-export const getWordAt = (code, index) => {
-  let start = index;
-  let end = index;
+export const getWordAt = (code: string, index: number): string => {
+  let start: number = index;
+  let end: number = index;
 
-  while (start > 0 && /[a-zA-Z_]/.test(code[start - 1])) start--;
-  while (end < code.length && /[a-zA-Z_]/.test(code[end])) end++;
+  const isWordChar = (ch: string): boolean => /[a-zA-Z_]/.test(ch);
+
+  while (start > 0 && isWordChar(code[start - 1])) start--;
+  while (end < code.length && isWordChar(code[end])) end++;
 
   return code.slice(start, end);
 };
 
-export const isInsideString = (code, index) => {
+export type TokenType =
+  | "keyword"
+  | "function"
+  | "string"
+  | "number"
+  | "operator"
+  | "bracket"
+  | "punctuation"
+  | "comment"
+  | "default"
+  | "red";
+
+export type SyntaxColorMap = Record<TokenType, string>;
+
+export const isInsideString = (code: string, index: number): boolean => {
   let inString = false;
-  let stringChar = null;
+  let stringChar: string | null = null;
 
   for (let i = 0; i < index; i++) {
     if (
@@ -192,9 +208,8 @@ export const isInsideString = (code, index) => {
   return inString;
 };
 
-export const getSyntaxColor = (tokenType) => {
-  // One Dark theme colors
-  const colors = {
+export const getSyntaxColor = (tokenType: TokenType): string => {
+  const colors: SyntaxColorMap = {
     keyword: "text-purple-400", // const, let, async, await, return
     function: "text-blue-400", // function names
     string: "text-green-400", // strings
@@ -209,7 +224,15 @@ export const getSyntaxColor = (tokenType) => {
   return colors[tokenType] || colors.default;
 };
 
-export const getCharColor = (index, codeSnippet, input) => {
+export interface GetCharColorFn {
+  (index: number, codeSnippet: string, input: string): string;
+}
+
+export const getCharColor: GetCharColorFn = (
+  index: number,
+  codeSnippet: string,
+  input: string
+): string => {
   const tokenType = getTokenType(codeSnippet[index], index, codeSnippet);
   const syntaxColor = getSyntaxColor(tokenType);
 
@@ -223,7 +246,14 @@ export const getCharColor = (index, codeSnippet, input) => {
   return syntaxColor; // Not yet typed
 };
 
-export const getCharOpacity = (index, input) => {
+export interface GetCharOpacityFn {
+  (index: number, input: string): string;
+}
+
+export const getCharOpacity: GetCharOpacityFn = (
+  index: number,
+  input: string
+): string => {
   if (index < input.length) {
     return "opacity-100";
   }
