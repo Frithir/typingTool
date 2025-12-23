@@ -7,7 +7,7 @@ export const menuItems = [
 
 export const Menu = ({ selectedItem, onSelectItem }: MenuProps) => {
   return (
-    <div className="bg-gray-900 border-b border-gray-700">
+    <div className="bg-gray-900 border-b border-gray-700 z-10">
       <div className="max-w-4xl mx-auto px-8 py-4">
         <div className="flex gap-2">
           {menuItems.map((item) => (

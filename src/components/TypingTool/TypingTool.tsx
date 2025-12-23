@@ -20,6 +20,7 @@ export const TypingTool = () => {
     totalAccuracy: 0,
   });
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const codeSnippet = currentSnippet?.code || "";
   const totalChars = codeSnippet.length;
@@ -177,6 +178,10 @@ export const TypingTool = () => {
     }, 100);
   };
 
+  const handleContainerClick = () => {
+    inputRef.current?.focus();
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8 font-mono">
       <div className="max-w-4xl mx-auto">
@@ -222,8 +227,12 @@ export const TypingTool = () => {
           </div>
         </div>
 
-        {/* Code Display Area */}
-        <div className="text-left bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700 relative overflow-hidden">
+        {/* Code Display Area - Clickable to focus */}
+        <div
+          ref={containerRef}
+          onClick={handleContainerClick}
+          className="text-left bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700 relative overflow-hidden cursor-text"
+        >
           <div className="absolute top-3 right-3 text-xs text-gray-500 uppercase tracking-wider">
             {currentSnippet?.language || "JavaScript"}
           </div>
@@ -310,20 +319,15 @@ export const TypingTool = () => {
         {/* Instructions */}
         {!startTime && !isComplete && (
           <div className="text-center text-gray-400 mt-6">
-            <p className="mb-2">Click anywhere to focus and start typing...</p>
+            <p className="mb-2">
+              Click the code area above to focus and start typing...
+            </p>
             <p className="text-sm">
               Type the code exactly as shown above. Errors will be highlighted
               in red.
             </p>
           </div>
         )}
-
-        {/* Focus helper */}
-        <div
-          onClick={() => inputRef.current?.focus()}
-          className="absolute inset-0 cursor-text"
-          style={{ zIndex: isComplete ? -1 : 1 }}
-        />
       </div>
     </div>
   );
