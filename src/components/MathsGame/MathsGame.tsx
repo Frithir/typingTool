@@ -14,7 +14,12 @@ export const MathsGame = () => {
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(
     null
   );
+  const [isPaused, setIsPaused] = useState(false);
   const [usedEquations, setUsedEquations] = useState<Set<string>>(new Set());
+  const [showIntro, setShowIntro] = useState(true);
+  const [wrongAnswerDisplay, setWrongAnswerDisplay] = useState<string | null>(
+    null
+  );
   const timerRef = useRef<number | null>(null);
 
   // Initialize first equation
@@ -24,30 +29,78 @@ export const MathsGame = () => {
 
   // Timer countdown
   useEffect(() => {
-    if (timeLeft > 0 && !isChecking) {
+    if (timeLeft > 0 && !isChecking && !showIntro && !isPaused) {
       timerRef.current = window.setTimeout(() => {
         setTimeLeft((t) => t - 1);
       }, 1000);
-    } else if (timeLeft === 0 && !isChecking) {
+    } else if (timeLeft === 0 && !isChecking && !showIntro) {
       handleTimeout();
     }
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [timeLeft, isChecking]);
+  }, [timeLeft, isChecking, showIntro, isPaused]);
 
-  // Handle delete key
+  // Handle keyboard input for number selection and navigation
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (isChecking || showIntro) return;
+
+      // Number keys 0-9
+      if (/^[0-9]$/.test(e.key)) {
+        const digit = parseInt(e.key);
+        const availableOptions =
+          currentEquation?.options.filter((opt) => !usedOptions.has(opt)) || [];
+
+        // Find available option that matches this digit
+        const matchingOption = availableOptions.find((opt) => {
+          const optStr = opt.toString();
+          return (
+            optStr === digit.toString() || optStr.startsWith(digit.toString())
+          );
+        });
+
+        if (matchingOption !== undefined) {
+          handleNumberClick(matchingOption);
+        }
+      }
+
+      // Arrow keys to navigate slots
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        const direction = e.key === "ArrowLeft" ? -1 : 1;
+        const newSlot = activeSlot + direction;
+        if (newSlot >= 0 && newSlot < userAnswers.length) {
+          setActiveSlot(newSlot);
+        }
+      }
+
+      // Enter to check answer
+      if (e.key === "Enter") {
+        const allFilled = userAnswers.every((a) => a !== null);
+        if (allFilled) {
+          handleCheck();
+        }
+      }
+
+      // Delete/Backspace to undo
       if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
         handleUndo();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeSlot, userAnswers, usedOptions]);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [
+    isChecking,
+    showIntro,
+    usedOptions,
+    activeSlot,
+    userAnswers,
+    currentEquation,
+  ]);
 
   const loadNewEquation = () => {
     const equation = getRandomEquation("easy", usedEquations);
@@ -57,6 +110,7 @@ export const MathsGame = () => {
     setActiveSlot(0);
     setTimeLeft(equation.timeLimit);
     setFeedback(null);
+    setWrongAnswerDisplay(null);
     setIsChecking(false);
   };
 
@@ -122,6 +176,37 @@ export const MathsGame = () => {
 
     setFeedback(isCorrect ? "correct" : "incorrect");
 
+    // Calculate wrong answer for display
+    if (!isCorrect) {
+      const [a, b] = userAnswers as number[];
+      let result = 0;
+      switch (currentEquation.category) {
+        case "addition":
+          result = a + b;
+          break;
+        case "subtraction":
+          result = a - b;
+          break;
+        case "multiplication":
+          result = a * b;
+          break;
+        case "division":
+          result = a / b;
+          break;
+      }
+
+      const operator =
+        currentEquation.category === "addition"
+          ? "+"
+          : currentEquation.category === "subtraction"
+          ? "-"
+          : currentEquation.category === "multiplication"
+          ? "×"
+          : "÷";
+
+      setWrongAnswerDisplay(`${a} ${operator} ${b} = ${result}`);
+    }
+
     if (isCorrect) {
       setScore((s) => s + 1);
       setStreak((s) => s + 1);
@@ -139,6 +224,7 @@ export const MathsGame = () => {
         setActiveSlot(0);
         setTimeLeft(currentEquation.timeLimit);
         setFeedback(null);
+        setWrongAnswerDisplay(null);
         setIsChecking(false);
       }, 3000);
     }
@@ -203,6 +289,43 @@ export const MathsGame = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-gray-100 p-8">
+      {/* Intro Modal */}
+      {showIntro && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-12 max-w-2xl border-4 border-purple-500 shadow-2xl shadow-purple-500/50">
+            <h1 className="text-5xl font-bold mb-6 text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              Welcome to Maths Challenge! 🧮
+            </h1>
+            <div className="text-gray-300 space-y-4 mb-8 text-lg">
+              <p>
+                <strong className="text-purple-400">Goal:</strong> Fill in the
+                blanks to complete the equation correctly!
+              </p>
+              <p>
+                <strong className="text-purple-400">How to play:</strong>
+              </p>
+              <ul className="list-disc list-inside space-y-2 ml-4">
+                <li>Click number cards to fill the blanks</li>
+                <li>Or type numbers on your keyboard</li>
+                <li>Use arrow keys to move between blanks</li>
+                <li>Press Delete/Backspace to undo</li>
+                <li>Press Enter to check your answer</li>
+              </ul>
+              <p>
+                <strong className="text-purple-400">Beat the clock:</strong>{" "}
+                Complete each equation before time runs out!
+              </p>
+            </div>
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold text-2xl py-4 rounded-lg shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
+            >
+              Let's Go! 🚀
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
@@ -233,6 +356,26 @@ export const MathsGame = () => {
                 }`}
               >
                 {timeLeft}s
+              </div>
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={() => {
+                    setIsPaused(!isPaused);
+                    if (isPaused) loadNewEquation();
+                  }}
+                  className="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded transition-colors"
+                >
+                  {isPaused ? "▶ Start" : "⏸ Stop"}
+                </button>
+                <button
+                  onClick={() => {
+                    setIsPaused(false);
+                    loadNewEquation();
+                  }}
+                  className="text-xs bg-purple-600 hover:bg-purple-500 px-3 py-1 rounded transition-colors"
+                >
+                  🔄 New
+                </button>
               </div>
             </div>
           </div>
@@ -275,14 +418,21 @@ export const MathsGame = () => {
               bg-black/60 rounded-xl backdrop-blur-sm
             `}
             >
-              <div
-                className={`
-                text-5xl font-bold
-                ${feedback === "correct" ? "text-green-400" : "text-red-400"}
-                animate-bounce
-              `}
-              >
-                {feedback === "correct" ? "🎉 Correct!" : "❌ Try Again!"}
+              <div className="text-center">
+                <div
+                  className={`
+                  text-5xl font-bold mb-4
+                  ${feedback === "correct" ? "text-green-400" : "text-red-400"}
+                  animate-bounce
+                `}
+                >
+                  {feedback === "correct" ? "🎉 Correct!" : "❌ Try Again!"}
+                </div>
+                {wrongAnswerDisplay && (
+                  <div className="text-3xl font-bold text-yellow-300 mt-4">
+                    {wrongAnswerDisplay}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -355,8 +505,10 @@ export const MathsGame = () => {
 
         {/* Instructions */}
         <div className="mt-8 text-center text-gray-400 text-sm">
-          <p>Click the number cards to fill in the blanks</p>
-          <p className="mt-1">Press Delete or Backspace to undo</p>
+          <p>Click number cards or type numbers to fill in the blanks</p>
+          <p className="mt-1">
+            Arrow keys to navigate • Delete/Backspace to undo • Enter to check
+          </p>
         </div>
       </div>
     </div>
