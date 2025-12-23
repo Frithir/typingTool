@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { validateEquation } from "./utils";
 import { getRandomEquation, type Equation } from "../../data/equations";
 
@@ -245,7 +245,7 @@ export const MathsGame = () => {
   // Parse equation to render with slots
   const renderEquation = () => {
     const parts = currentEquation.equation.split("_");
-    const elements: JSX.Element[] = [];
+    const elements: React.ReactElement[] = [];
 
     parts.forEach((part, idx) => {
       if (idx > 0) {
