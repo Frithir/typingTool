@@ -20,6 +20,9 @@ export const MathsGame = () => {
   const [wrongAnswerDisplay, setWrongAnswerDisplay] = useState<string | null>(
     null
   );
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
+    "medium"
+  );
   const timerRef = useRef<number | null>(null);
 
   // Initialize first equation
@@ -103,7 +106,7 @@ export const MathsGame = () => {
   ]);
 
   const loadNewEquation = () => {
-    const equation = getRandomEquation("easy", usedEquations);
+    const equation = getRandomEquation(difficulty, usedEquations);
     setCurrentEquation(equation);
     setUserAnswers(Array(equation.answers.length).fill(null));
     setUsedOptions(new Set());
@@ -115,7 +118,16 @@ export const MathsGame = () => {
   };
 
   const handleNumberClick = (num: number) => {
-    if (isChecking || usedOptions.has(num)) return;
+    if (isChecking) return;
+
+    // Count how many times this number appears in options
+    const totalAvailable =
+      currentEquation?.options.filter((opt) => opt === num).length || 0;
+    // Count how many times we've already used it
+    const timesUsed = userAnswers.filter((a) => a === num).length;
+
+    // Don't allow if we've used all available instances
+    if (timesUsed >= totalAvailable) return;
 
     const newAnswers = [...userAnswers];
     newAnswers[activeSlot] = num;
@@ -283,9 +295,15 @@ export const MathsGame = () => {
   };
 
   const allFilled = userAnswers.every((a) => a !== null);
-  const availableOptions = currentEquation.options.filter(
-    (opt) => !usedOptions.has(opt)
-  );
+  const availableOptions = currentEquation.options.filter((opt) => {
+    const timesInOptions = currentEquation.options.filter(
+      (o) => o === opt
+    ).length;
+    const timesUsed = userAnswers.filter((a) => a === opt).length;
+    return timesUsed < timesInOptions;
+  });
+  // Get unique available options for display
+  const uniqueAvailableOptions = Array.from(new Set(availableOptions));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-gray-100 p-8">
@@ -358,6 +376,17 @@ export const MathsGame = () => {
                 {timeLeft}s
               </div>
               <div className="flex gap-2 mt-2">
+                <select
+                  value={difficulty}
+                  onChange={(e) =>
+                    setDifficulty(e.target.value as "easy" | "medium" | "hard")
+                  }
+                  className="text-xs bg-gray-700 text-white px-2 py-1 rounded"
+                >
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
                 <button
                   onClick={() => {
                     setIsPaused(!isPaused);
@@ -444,29 +473,42 @@ export const MathsGame = () => {
             Choose your numbers:
           </h3>
           <div className="grid grid-cols-6 gap-4">
-            {availableOptions.map((num) => (
-              <button
-                key={num}
-                onClick={() => handleNumberClick(num)}
-                disabled={isChecking}
-                className={`
-                  relative group
-                  bg-gradient-to-br from-cyan-500 to-blue-600
-                  hover:from-cyan-400 hover:to-blue-500
-                  text-white font-bold text-3xl
-                  rounded-xl p-6 
-                  shadow-lg hover:shadow-cyan-500/50
-                  transform hover:scale-110 hover:-translate-y-1
-                  transition-all duration-200
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  disabled:transform-none
-                  border-2 border-cyan-300/30
-                `}
-              >
-                <div className="relative z-10">{num}</div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-              </button>
-            ))}
+            {uniqueAvailableOptions.map((num) => {
+              const totalAvailable = currentEquation.options.filter(
+                (opt) => opt === num
+              ).length;
+              const timesUsed = userAnswers.filter((a) => a === num).length;
+              const remaining = totalAvailable - timesUsed;
+
+              return (
+                <button
+                  key={num}
+                  onClick={() => handleNumberClick(num)}
+                  disabled={isChecking || remaining === 0}
+                  className={`
+            relative group
+            bg-gradient-to-br from-cyan-500 to-blue-600
+            hover:from-cyan-400 hover:to-blue-500
+            text-white font-bold text-3xl
+            rounded-xl p-6 
+            shadow-lg hover:shadow-cyan-500/50
+            transform hover:scale-110 hover:-translate-y-1
+            transition-all duration-200
+            disabled:opacity-50 disabled:cursor-not-allowed
+            disabled:transform-none
+            border-2 border-cyan-300/30
+          `}
+                >
+                  <div className="relative z-10">{num}</div>
+                  {remaining > 1 && (
+                    <div className="absolute top-1 right-1 bg-yellow-400 text-gray-900 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      {remaining}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+                </button>
+              );
+            })}
           </div>
         </div>
 

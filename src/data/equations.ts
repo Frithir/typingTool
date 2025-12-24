@@ -107,7 +107,7 @@ export const equations: Equation[] = [
     difficulty: "easy",
     equation: "_ + _ = 18",
     answers: [9, 9],
-    options: [5, 6, 7, 8, 9, 4],
+    options: [5, 6, 7, 8, 9, 9], // Added second 9
     title: "Single Digit Addition",
     timeLimit: 30,
   },
@@ -281,7 +281,7 @@ export const equations: Equation[] = [
     difficulty: "easy",
     equation: "_ × _ = 16",
     answers: [4, 4],
-    options: [2, 3, 4, 5, 6, 8],
+    options: [2, 3, 4, 4, 6, 8], // Added second 4
     title: "Times Tables",
     timeLimit: 30,
   },
@@ -395,7 +395,7 @@ export const equations: Equation[] = [
     difficulty: "medium",
     equation: "_ + _ = 56",
     answers: [28, 28],
-    options: [14, 21, 28, 32, 35, 42],
+    options: [14, 21, 28, 28, 35, 42], // Added second 28
     title: "Two Digit Addition",
     timeLimit: 45,
   },
@@ -529,7 +529,7 @@ export const equations: Equation[] = [
     difficulty: "medium",
     equation: "_ × _ = 144",
     answers: [12, 12],
-    options: [8, 9, 11, 12, 14, 16],
+    options: [8, 9, 11, 12, 12, 16], // Added second 12
     title: "Times Tables",
     timeLimit: 45,
   },
@@ -569,7 +569,7 @@ export const equations: Equation[] = [
     difficulty: "medium",
     equation: "_ × _ = 81",
     answers: [9, 9],
-    options: [6, 7, 8, 9, 11, 13],
+    options: [6, 7, 8, 9, 9, 13], // Added second 9
     title: "Times Tables",
     timeLimit: 45,
   },
@@ -589,7 +589,7 @@ export const equations: Equation[] = [
     difficulty: "medium",
     equation: "_ × _ = 64",
     answers: [8, 8],
-    options: [6, 7, 8, 9, 10, 12],
+    options: [6, 7, 8, 8, 10, 12], // Added second 8
     title: "Times Tables",
     timeLimit: 45,
   },
@@ -609,7 +609,7 @@ export const equations: Equation[] = [
     difficulty: "medium",
     equation: "_ × _ = 36",
     answers: [6, 6],
-    options: [4, 5, 6, 7, 8, 9],
+    options: [4, 5, 6, 6, 8, 9], // Added second 6
     title: "Times Tables",
     timeLimit: 45,
   },
@@ -659,7 +659,7 @@ export const equations: Equation[] = [
     difficulty: "medium",
     equation: "_ × _ = 100",
     answers: [10, 10],
-    options: [8, 9, 10, 11, 12, 20],
+    options: [8, 9, 10, 10, 12, 20], // Added second 10
     title: "Times Tables",
     timeLimit: 45,
   },
@@ -857,7 +857,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ × _ = 121",
     answers: [11, 11],
-    options: [9, 10, 11, 12, 13, 14],
+    options: [9, 10, 11, 11, 13, 14], // Added second 11
     title: "Advanced Multiplication",
     timeLimit: 60,
   },
@@ -927,7 +927,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ × _ = 169",
     answers: [13, 13],
-    options: [11, 12, 13, 14, 15, 16],
+    options: [11, 12, 13, 13, 15, 16], // Added second 13
     title: "Advanced Multiplication",
     timeLimit: 60,
   },
@@ -957,7 +957,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ × _ = 196",
     answers: [14, 14],
-    options: [12, 13, 14, 15, 16, 17],
+    options: [12, 13, 14, 14, 16, 17], // Added second 14
     title: "Advanced Multiplication",
     timeLimit: 60,
   },
@@ -977,7 +977,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ × _ = 225",
     answers: [15, 15],
-    options: [12, 13, 14, 15, 16, 18],
+    options: [12, 13, 14, 15, 15, 18], // Added second 15
     title: "Advanced Multiplication",
     timeLimit: 60,
   },
@@ -1059,7 +1059,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 11",
     answers: [121, 11],
-    options: [10, 11, 12, 110, 121, 132],
+    options: [10, 11, 11, 110, 121, 132], // Added second 11
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1069,7 +1069,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 12",
     answers: [144, 12],
-    options: [10, 11, 12, 132, 144, 156],
+    options: [10, 11, 12, 12, 144, 156], // Added second 12
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1079,7 +1079,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 15",
     answers: [180, 12],
-    options: [12, 13, 14, 150, 165, 180],
+    options: [12, 12, 14, 15, 165, 180], // Need both 12's and 15
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1089,7 +1089,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 16",
     answers: [192, 12],
-    options: [12, 13, 14, 168, 180, 192],
+    options: [12, 12, 14, 168, 180, 192], // Added second 12
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1099,7 +1099,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 17",
     answers: [204, 12],
-    options: [13, 14, 15, 170, 187, 204],
+    options: [12, 14, 15, 170, 187, 204], // Changed 13 to 12
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1109,7 +1109,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 18",
     answers: [216, 12],
-    options: [14, 15, 16, 180, 200, 216],
+    options: [12, 15, 16, 180, 200, 216], // Changed 14 to 12
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1119,7 +1119,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 19",
     answers: [228, 12],
-    options: [15, 16, 17, 190, 210, 228],
+    options: [12, 16, 17, 190, 210, 228], // Changed 15 to 12
     title: "Advanced Division",
     timeLimit: 60,
   },
@@ -1129,7 +1129,7 @@ export const equations: Equation[] = [
     difficulty: "hard",
     equation: "_ ÷ _ = 20",
     answers: [240, 12],
-    options: [16, 17, 18, 200, 220, 240],
+    options: [12, 17, 18, 200, 220, 240], // Changed 16 to 12
     title: "Advanced Division",
     timeLimit: 60,
   },
