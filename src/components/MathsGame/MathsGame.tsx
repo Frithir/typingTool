@@ -16,7 +16,10 @@ export const MathsGame = () => {
   );
   const [isPaused, setIsPaused] = useState(false);
   const [usedEquations, setUsedEquations] = useState<Set<string>>(new Set());
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => {
+    const hasSeenIntro = localStorage.getItem("mathsGameIntroSeen");
+    return hasSeenIntro !== "true";
+  });
   const [wrongAnswerDisplay, setWrongAnswerDisplay] = useState<string | null>(
     null
   );
@@ -335,7 +338,10 @@ export const MathsGame = () => {
               </p>
             </div>
             <button
-              onClick={() => setShowIntro(false)}
+              onClick={() => {
+                localStorage.setItem("mathsGameIntroSeen", "true");
+                setShowIntro(false);
+              }}
               className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold text-2xl py-4 rounded-lg shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
             >
               Let's Go! 🚀
