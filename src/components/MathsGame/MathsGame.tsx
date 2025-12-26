@@ -274,7 +274,7 @@ export const MathsGame = () => {
             key={`slot-${slotIdx}`}
             onClick={() => !isChecking && setActiveSlot(slotIdx)}
             className={`
-              inline-block min-w-[80px] text-center mx-2 px-4 py-2 
+              inline-block min-w-[50px] sm:min-w-[60px] md:min-w-[80px] text-center mx-1 sm:mx-2 px-2 sm:px-3 md:px-4 py-1 sm:py-2 
               border-b-4 border-dashed cursor-pointer transition-all
               ${isActive ? "border-yellow-400 scale-110" : "border-gray-400"}
               ${answer !== null ? "text-yellow-300" : "text-gray-500"}
@@ -287,7 +287,7 @@ export const MathsGame = () => {
 
       if (part.trim()) {
         elements.push(
-          <span key={`text-${idx}`} className="mx-1">
+          <span key={`text-${idx}`} className="mx-0.5 sm:mx-1">
             {part}
           </span>
         );
@@ -309,15 +309,15 @@ export const MathsGame = () => {
   const uniqueAvailableOptions = Array.from(new Set(availableOptions));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-gray-100 p-3 sm:p-6 md:p-8">
       {/* Intro Modal */}
       {showIntro && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-12 max-w-2xl border-4 border-purple-500 shadow-2xl shadow-purple-500/50">
-            <h1 className="text-5xl font-bold mb-6 text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 sm:p-8 md:p-12 max-w-2xl w-full border-4 border-purple-500 shadow-2xl shadow-purple-500/50 max-h-[90vh] overflow-y-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
               Welcome to Maths Challenge! 🧮
             </h1>
-            <div className="text-gray-300 space-y-4 mb-8 text-lg">
+            <div className="text-gray-300 space-y-3 sm:space-y-4 mb-6 sm:mb-8 text-base sm:text-lg">
               <p>
                 <strong className="text-purple-400">Goal:</strong> Fill in the
                 blanks to complete the equation correctly!
@@ -326,7 +326,7 @@ export const MathsGame = () => {
                 <strong className="text-purple-400">How to play:</strong>
               </p>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Click number cards to fill the blanks</li>
+                <li>Tap number cards to fill the blanks</li>
                 <li>Or type numbers on your keyboard</li>
                 <li>Use arrow keys to move between blanks</li>
                 <li>Press Delete/Backspace to undo</li>
@@ -342,7 +342,7 @@ export const MathsGame = () => {
                 localStorage.setItem("mathsGameIntroSeen", "true");
                 setShowIntro(false);
               }}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold text-2xl py-4 rounded-lg shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white font-bold text-xl sm:text-2xl py-3 sm:py-4 rounded-lg shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 transition-all"
             >
               Let's Go! 🚀
             </button>
@@ -352,28 +352,36 @@ export const MathsGame = () => {
 
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
+        <div className="mb-4 sm:mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
               Maths Challenge
             </h1>
-            <p className="text-gray-400">{currentEquation.title}</p>
+            <p className="text-sm sm:text-base text-gray-400">
+              {currentEquation.title}
+            </p>
           </div>
 
           {/* Stats */}
-          <div className="flex gap-6">
-            <div className="text-center">
-              <div className="text-sm text-gray-400 mb-1">Score</div>
-              <div className="text-3xl font-bold text-green-400">{score}</div>
+          <div className="flex gap-3 sm:gap-4 md:gap-6 w-full sm:w-auto">
+            <div className="text-center flex-1 sm:flex-initial">
+              <div className="text-xs sm:text-sm text-gray-400 mb-1">Score</div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-green-400">
+                {score}
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-sm text-gray-400 mb-1">Streak</div>
-              <div className="text-3xl font-bold text-orange-400">{streak}</div>
+            <div className="text-center flex-1 sm:flex-initial">
+              <div className="text-xs sm:text-sm text-gray-400 mb-1">
+                Streak
+              </div>
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-orange-400">
+                {streak}
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-sm text-gray-400 mb-1">Time</div>
+            <div className="text-center flex-1 sm:flex-initial">
+              <div className="text-xs sm:text-sm text-gray-400 mb-1">Time</div>
               <div
-                className={`text-3xl font-bold ${
+                className={`text-xl sm:text-2xl md:text-3xl font-bold ${
                   timeLeft <= 10
                     ? "text-red-400 animate-pulse"
                     : "text-blue-400"
@@ -381,13 +389,13 @@ export const MathsGame = () => {
               >
                 {timeLeft}s
               </div>
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-1 sm:gap-2 mt-2">
                 <select
                   value={difficulty}
                   onChange={(e) =>
                     setDifficulty(e.target.value as "easy" | "medium" | "hard")
                   }
-                  className="text-xs bg-gray-700 text-white px-2 py-1 rounded"
+                  className="text-xs bg-gray-700 text-white px-1.5 sm:px-2 py-1 rounded"
                 >
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
@@ -398,18 +406,18 @@ export const MathsGame = () => {
                     setIsPaused(!isPaused);
                     if (isPaused) loadNewEquation();
                   }}
-                  className="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded transition-colors"
+                  className="text-xs bg-blue-600 hover:bg-blue-500 px-2 sm:px-3 py-1 rounded transition-colors"
                 >
-                  {isPaused ? "▶ Start" : "⏸ Stop"}
+                  {isPaused ? "▶" : "⏸"}
                 </button>
                 <button
                   onClick={() => {
                     setIsPaused(false);
                     loadNewEquation();
                   }}
-                  className="text-xs bg-purple-600 hover:bg-purple-500 px-3 py-1 rounded transition-colors"
+                  className="text-xs bg-purple-600 hover:bg-purple-500 px-2 sm:px-3 py-1 rounded transition-colors"
                 >
-                  🔄 New
+                  🔄
                 </button>
               </div>
             </div>
@@ -420,7 +428,7 @@ export const MathsGame = () => {
         <div
           className={`
           relative bg-gradient-to-br from-slate-800 to-slate-900 
-          rounded-xl p-12 mb-8 shadow-2xl border-4 
+          rounded-xl p-4 sm:p-8 md:p-12 mb-4 sm:mb-6 md:mb-8 shadow-2xl border-4 
           ${
             feedback === "correct"
               ? "border-green-500 shadow-green-500/50"
@@ -435,7 +443,7 @@ export const MathsGame = () => {
           <div className="absolute inset-0 opacity-10 rounded-xl pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
 
           <div
-            className="text-6xl font-bold text-center tracking-wider"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center tracking-wider break-words"
             style={{
               fontFamily: "'Courier New', monospace",
               textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
@@ -453,10 +461,10 @@ export const MathsGame = () => {
               bg-black/60 rounded-xl backdrop-blur-sm
             `}
             >
-              <div className="text-center">
+              <div className="text-center p-4">
                 <div
                   className={`
-                  text-5xl font-bold mb-4
+                  text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4
                   ${feedback === "correct" ? "text-green-400" : "text-red-400"}
                   animate-bounce
                 `}
@@ -464,7 +472,7 @@ export const MathsGame = () => {
                   {feedback === "correct" ? "🎉 Correct!" : "❌ Try Again!"}
                 </div>
                 {wrongAnswerDisplay && (
-                  <div className="text-3xl font-bold text-yellow-300 mt-4">
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mt-2 sm:mt-4">
                     {wrongAnswerDisplay}
                   </div>
                 )}
@@ -474,11 +482,11 @@ export const MathsGame = () => {
         </div>
 
         {/* Number Cards */}
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-4 text-gray-300">
+        <div className="mb-4 sm:mb-6">
+          <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 text-gray-300">
             Choose your numbers:
           </h3>
-          <div className="grid grid-cols-6 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
             {uniqueAvailableOptions.map((num) => {
               const totalAvailable = currentEquation.options.filter(
                 (opt) => opt === num
@@ -495,14 +503,16 @@ export const MathsGame = () => {
             relative group
             bg-gradient-to-br from-cyan-500 to-blue-600
             hover:from-cyan-400 hover:to-blue-500
-            text-white font-bold text-3xl
-            rounded-xl p-6 
+            active:scale-95
+            text-white font-bold text-2xl sm:text-3xl
+            rounded-xl p-4 sm:p-5 md:p-6 
             shadow-lg hover:shadow-cyan-500/50
-            transform hover:scale-110 hover:-translate-y-1
+            transform hover:scale-105 hover:-translate-y-1
             transition-all duration-200
             disabled:opacity-50 disabled:cursor-not-allowed
             disabled:transform-none
             border-2 border-cyan-300/30
+            min-h-[60px] sm:min-h-[70px] md:min-h-[80px]
           `}
                 >
                   <div className="relative z-10">{num}</div>
@@ -519,18 +529,20 @@ export const MathsGame = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center">
           <button
             onClick={handleUndo}
             disabled={isChecking || userAnswers.every((a) => a === null)}
             className="
               bg-gray-700 hover:bg-gray-600
-              text-white font-semibold px-6 py-3 rounded-lg
-              transition-colors
+              active:scale-95
+              text-white font-semibold px-4 sm:px-6 py-3 rounded-lg
+              transition-all
               disabled:opacity-30 disabled:cursor-not-allowed
+              min-h-[48px]
             "
           >
-            ⌫ Undo (Delete)
+            ⌫ Undo
           </button>
 
           <button
@@ -539,12 +551,14 @@ export const MathsGame = () => {
             className="
               bg-gradient-to-r from-green-500 to-emerald-600
               hover:from-green-400 hover:to-emerald-500
-              text-white font-bold text-xl px-12 py-4 rounded-lg
+              active:scale-95
+              text-white font-bold text-lg sm:text-xl px-8 sm:px-12 py-3 sm:py-4 rounded-lg
               shadow-lg hover:shadow-green-500/50
               transform hover:scale-105
               transition-all
               disabled:opacity-30 disabled:cursor-not-allowed
               disabled:transform-none
+              min-h-[48px]
             "
           >
             Check Answer ✓
@@ -552,9 +566,9 @@ export const MathsGame = () => {
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 text-center text-gray-400 text-sm">
-          <p>Click number cards or type numbers to fill in the blanks</p>
-          <p className="mt-1">
+        <div className="mt-6 sm:mt-8 text-center text-gray-400 text-xs sm:text-sm">
+          <p>Tap number cards or type numbers to fill in the blanks</p>
+          <p className="mt-1 hidden sm:block">
             Arrow keys to navigate • Delete/Backspace to undo • Enter to check
           </p>
         </div>
