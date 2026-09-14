@@ -2,6 +2,8 @@ import type { MenuProps } from "./Menu.types";
 
 export const menuItems = [
   { id: "maths", label: "Maths Game" },
+  { id: "trig", label: "Unit Circle" },
+  { id: "pi", label: "Pi Mnemonic" },
   { id: "typing", label: "Typing Tool" },
 ];
 
