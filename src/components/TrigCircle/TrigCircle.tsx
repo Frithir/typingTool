@@ -24,7 +24,7 @@ export const TrigCircle = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-white p-4 sm:p-6 md:p-8">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="mb-4 sm:mb-6 md:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
@@ -75,9 +75,9 @@ const ExploreMode = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 border-slate-700">
-        <TrigDiagram angleDeg={angleDeg} size={320} />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+      <div className="md:col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 border-slate-700">
+        <TrigDiagram angleDeg={angleDeg} size={480} />
 
         <div className="mt-4 flex flex-col gap-3">
           <input
@@ -101,7 +101,7 @@ const ExploreMode = () => {
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 border-slate-700">
+      <div className="md:col-span-1 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 border-slate-700">
         <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-300">
           Values at θ = {Math.round(angleDeg)}°
         </h3>
@@ -125,12 +125,9 @@ const ExploreMode = () => {
         </div>
 
         <div className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-400 space-y-1">
-          <p>
-            sin = opposite / hypotenuse
-            <br /> cos = adjacent / hypotenuse tan = sin / cos
-            <br /> cot = cos / sin = 1 / tan csc = 1 / sin
-            <br /> sec = 1 / cos
-          </p>
+          <p>sin = opposite / hypotenuse, cos = adjacent / hypotenuse</p>
+          <p>tan = sin / cos, cot = cos / sin = 1 / tan</p>
+          <p>csc = 1 / sin, sec = 1 / cos</p>
         </div>
       </div>
     </div>
@@ -195,9 +192,10 @@ const QuizMode = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="mb-4 sm:mb-6 flex flex-wrap gap-3 sm:gap-4 items-center justify-between">
-        <div className="flex gap-3 sm:gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+      {/* Small left column: stats + controls */}
+      <div className="md:col-span-1 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 border-slate-700 flex flex-col gap-4 sm:gap-6">
+        <div className="flex flex-row md:flex-col gap-3 sm:gap-4 justify-between md:justify-start">
           <Stat label="Score" value={score} color="text-green-400" />
           <Stat label="Streak" value={streak} color="text-orange-400" />
           <Stat
@@ -208,7 +206,8 @@ const QuizMode = () => {
             }
           />
         </div>
-        <div className="flex gap-2">
+
+        <div className="flex flex-row md:flex-col gap-2 pt-2 border-t border-gray-700">
           <select
             value={difficulty}
             onChange={(e) => {
@@ -216,7 +215,7 @@ const QuizMode = () => {
               setDifficulty(next);
               loadNewQuestion(next);
             }}
-            className="text-xs sm:text-sm bg-gray-700 text-white px-2 py-1 rounded"
+            className="text-xs sm:text-sm bg-gray-700 text-white px-2 py-1 rounded flex-1"
           >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
@@ -226,13 +225,14 @@ const QuizMode = () => {
             onClick={() => setIsPaused((p) => !p)}
             className="text-xs sm:text-sm bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded transition-colors"
           >
-            {isPaused ? "▶" : "⏸"}
+            {isPaused ? "▶ Resume" : "⏸ Pause"}
           </button>
         </div>
       </div>
 
+      {/* Wider right column: question + bigger diagram + answers */}
       <div
-        className={`relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 transition-all duration-300 ${
+        className={`md:col-span-2 relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 sm:p-6 shadow-2xl border-4 transition-all duration-300 ${
           feedback === "correct"
             ? "border-green-500 shadow-green-500/50"
             : feedback === "incorrect"
@@ -248,7 +248,7 @@ const QuizMode = () => {
           at θ = {question.angleDeg}°?
         </p>
 
-        <TrigDiagram angleDeg={question.angleDeg} size={280} />
+        <TrigDiagram angleDeg={question.angleDeg} size={420} />
 
         <div className="grid grid-cols-2 gap-2 sm:gap-3 mt-4 sm:mt-6">
           {question.options.map((option) => {
